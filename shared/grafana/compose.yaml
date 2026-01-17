@@ -1,0 +1,83 @@
+version: "3.8"
+services:
+  grafana:
+    image: grafana/grafana-oss:12.1.0
+    container_name: grafana
+    volumes:
+      - /mnt/nas/prod/grafana:/var/lib/grafana
+    restart: unless-stopped
+    user: root
+    networks:
+      - proxy
+    environment:
+      - GF_SERVER_ROOT_URL=https://grafana.jonasandersen.no
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.grafana.rule=(Host(`grafana.jonasandersen.no`) ||
+          Host(`grafana.jonasandersen.dev`))
+        - traefik.http.services.grafana.loadbalancer.server.port=3000
+        - traefik.http.routers.grafana.entrypoints=http,https,http-external
+  prometheus:
+    container_name: prometheus
+    restart: unless-stopped
+    image: prom/prometheus:v3.5.0
+    command: --config.file=/etc/prometheus/prometheus.yaml
+    volumes:
+      - /mnt/nas/prod/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - /mnt/nas/prod/prometheus:/prometheus
+    networks:
+      - proxy
+    extra_hosts:
+      - host.docker.internal:host-gateway
+  # node_exporter:
+  #   image: prom/node-exporter:v1.8.2
+  #   container_name: node-exporter
+  #   command:
+  #     - --path.rootfs=/host
+  #   network_mode: host
+  #   pid: host
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /:/host:ro,rslave
+  #   deploy:
+  #     mode: global
+  loki:
+    image: grafana/loki:3.5.3
+    ports:
+      - 3100:3100
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
+    user: root
+    networks:
+      - proxy
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.loki.rule=Host(`loki.jonasandersen.dev`)
+        - traefik.http.services.loki.loadbalancer.server.port=3100
+        - traefik.http.routers.loki.entrypoints=http,https
+    volumes:
+      - /mnt/nas/prod/loki:/loki
+
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    networks:
+      - proxy
+    volumes:
+      - /mnt/nas/prod/tempo/etc:/etc
+      - /mnt/nas/prod/tempo/data:/var/tempo
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.tempo.rule=Host(`tempo.jonasandersen.dev`)
+        - traefik.http.services.tempo.loadbalancer.server.port=4318
+        - traefik.http.routers.tempo.entrypoints=http,https
+    ports:
+      - "3200:3200"    # tempo
+      - "9411:9411"    # zipkin
+      - "4318:4318"    # zipkin
+networks:
+  proxy:
+    external: true
