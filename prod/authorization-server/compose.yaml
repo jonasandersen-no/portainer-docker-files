@@ -11,7 +11,7 @@ services:
       labels:
         - traefik.enable=true
         - traefik.http.routers.authorization-server.rule=Host(`auth.jonasandersen.no`)
-        - traefik.http.routers.authorization-server.entrypoints=http,https,https-external
+        - traefik.http.routers.authorization-server.entrypoints=http,https,http-external
         - traefik.http.services.authorization-server.loadbalancer.server.port=8899
 networks:
   proxy:
