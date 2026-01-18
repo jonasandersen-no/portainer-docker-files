@@ -1,0 +1,18 @@
+services:
+  authorization-server:
+    restart: unless-stopped
+    image: bjoggis/authorization-server:1-SNAPSHOT
+    container_name: authorization-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - proxy
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.authorization-server.rule=Host(`auth.jonasandersen.no`)
+        - traefik.http.routers.authorization-server.entrypoints=http,https,https-external
+        - traefik.http.services.authorization-server.loadbalancer.server.port=8899
+networks:
+  proxy:
+    external: true
