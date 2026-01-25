@@ -1,7 +1,7 @@
 services:
   bgg-discord-bot:
     restart: unless-stopped
-    image: bjoggis/bgg-discord-bot:1
+    image: bjoggis/bgg-discord-bot:2
     container_name: bgg-discord-bot
     environment:
       - SPRING_PROFILES_ACTIVE=prod
