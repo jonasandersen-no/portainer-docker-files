@@ -23,6 +23,8 @@ services:
     restart: unless-stopped
     image: prom/prometheus:v3.5.0
     command: --config.file=/etc/prometheus/prometheus.yaml
+    ports:
+      - 9090:9090
     volumes:
       - /mnt/nas/prod/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
       - /mnt/nas/prod/prometheus:/prometheus
