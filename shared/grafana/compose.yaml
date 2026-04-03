@@ -45,7 +45,7 @@ services:
   #   deploy:
   #     mode: global
   loki:
-    image: grafana/loki:3.5.3
+    image: grafana/loki:3.7.1
     ports:
       - 3100:3100
     command: -config.file=/etc/loki/local-config.yaml
