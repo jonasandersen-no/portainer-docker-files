@@ -1,0 +1,22 @@
+services:
+  config-server:
+    restart: unless-stopped
+    image: bjoggis/config-server:v8
+    container_name: config-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - ENCRYPT_KEY=$ENCRYPT_KEY
+      - SPRING_CLOUD_CONFIG_JDBC_URL=$SPRING_CLOUD_CONFIG_JDBC_URL
+      - SPRING_CLOUD_CONFIG_JDBC_USERNAME=$SPRING_CLOUD_CONFIG_JDBC_USERNAME
+      - SPRING_CLOUD_CONFIG_JDBC_PASSWORD=$SPRING_CLOUD_CONFIG_JDBC_PASSWORD
+    networks:
+      - proxy
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.config-server.rule=Host(`config.jonasandersen.dev`)
+        - traefik.http.routers.config-server.entrypoints=http,https
+        - traefik.http.services.config-server.loadbalancer.server.port=8888
+networks:
+  proxy:
+    external: true
