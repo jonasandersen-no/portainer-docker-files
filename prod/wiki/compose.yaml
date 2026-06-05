@@ -6,7 +6,7 @@ services:
       - /mnt/nas/prod/wiki:/app-data
     user: 65534:65534
     networks:
-      - public
+      - proxy
     deploy:
       labels:
         - traefik.enable=true
