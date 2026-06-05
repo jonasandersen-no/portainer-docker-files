@@ -5,6 +5,8 @@ services:
     volumes:
       - /mnt/nas/prod/wiki:/app-data
     user: 65534:65534
+    networks:
+      - public
     deploy:
       labels:
         - traefik.enable=true
