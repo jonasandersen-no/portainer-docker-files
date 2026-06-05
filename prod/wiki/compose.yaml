@@ -5,8 +5,8 @@ services:
     volumes:
       - /mnt/nas/prod/wiki:/app-data
     environment:
-      PUID: 1000
-      PGID: 1000
+      PUID: 65534
+      PGID: 65534
     deploy:
       labels:
         - traefik.enable=true
