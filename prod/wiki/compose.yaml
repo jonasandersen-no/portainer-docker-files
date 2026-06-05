@@ -3,7 +3,7 @@ services:
     image: redimp/otterwiki:2.20.6
     restart: unless-stopped
     volumes:
-      - /mnt/nas/prod/wiki:/app-data
+      - /mnt/nas/prod/wiki:/app-data:Z
     deploy:
       labels:
         - traefik.enable=true
