@@ -28,6 +28,10 @@ services:
     volumes:
       - /mnt/nas/prod/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
       - /mnt/nas/prod/prometheus:/prometheus
+    dns:
+      - 100.100.100.100 # Tailscale MagicDNS resolver
+    dns_search:
+      - pancacke-vibe.ts.net
     networks:
       - proxy
     extra_hosts:
