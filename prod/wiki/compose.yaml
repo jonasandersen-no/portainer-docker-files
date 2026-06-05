@@ -4,6 +4,7 @@ services:
     restart: unless-stopped
     volumes:
       - /mnt/nas/prod/wiki:/app-data
+    user: 1000:1000
     deploy:
       labels:
         - traefik.enable=true
