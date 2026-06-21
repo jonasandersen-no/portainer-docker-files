@@ -1,7 +1,7 @@
 services:
   config-server:
     restart: unless-stopped
-    image: bjoggis/config-server:v8
+    image: bjoggis/config-server:v9
     container_name: config-server
     environment:
       - SPRING_PROFILES_ACTIVE=prod
