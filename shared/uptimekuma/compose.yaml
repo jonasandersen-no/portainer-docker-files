@@ -26,9 +26,9 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.http.routers.wiki.rule=Host(`status.jonasandersen.no`)
-        - traefik.http.services.wiki.loadbalancer.server.port=3001
-        - traefik.http.routers.wiki.entrypoints=http,https,http-external
+        - traefik.http.routers.uptime.rule=Host(`status.jonasandersen.no`)
+        - traefik.http.services.uptime.loadbalancer.server.port=3001
+        - traefik.http.routers.uptime.entrypoints=http,https,http-external
       replicas: 1
       placement:
         constraints: [ node.hostname == proxy ]
