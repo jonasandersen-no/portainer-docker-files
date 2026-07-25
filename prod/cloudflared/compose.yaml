@@ -6,7 +6,7 @@ services:
     volumes:
       - /mnt/nas/prod/cloudflared-credentials/public:/etc/cloudflared/config
     networks:
-      - cloudflared
+      - proxy
 networks:
-  cloudflared:
+  proxy:
     external: true
