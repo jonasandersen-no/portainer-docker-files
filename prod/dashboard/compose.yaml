@@ -16,6 +16,8 @@ services:
         - traefik.http.routers.dashboard.rule=Host(`dashboard.jonasandersen.dev`)
         - traefik.http.services.dashboard.loadbalancer.server.port=7575
         - traefik.http.routers.dashboard.entrypoints=http,https
+    dns:
+      - 100.100.100.100
 networks:
   proxy:
     external: true
