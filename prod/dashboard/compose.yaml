@@ -1,20 +1,21 @@
 services:
-  homepage:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/homarr-labs/homarr:v1.74.0
     restart: unless-stopped
-    image: ghcr.io/gethomepage/homepage:v1.13.2
-    container_name: homepage
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - /mnt/nas/prod/homarr/appdata:/appdata
     environment:
-      HOMEPAGE_ALLOWED_HOSTS: dashboard.jonasandersen.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
+      - SECRET_ENCRYPTION_KEY=$HOMARR_SECRET_ENCRYPTION_KEY
     networks:
       - proxy
     deploy:
       labels:
         - traefik.enable=true
         - traefik.http.routers.dashboard.rule=Host(`dashboard.jonasandersen.dev`)
-        - traefik.http.services.dashboard.loadbalancer.server.port=3000
+        - traefik.http.services.dashboard.loadbalancer.server.port=7575
         - traefik.http.routers.dashboard.entrypoints=http,https
-    volumes:
-      - /mnt/nas/prod/dashboard/config:/app/config
 networks:
   proxy:
     external: true
