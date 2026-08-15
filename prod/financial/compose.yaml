@@ -49,4 +49,5 @@ networks:
   proxy:
     external: true
   firefly_iii:
-    driver: overlay 
+    driver: overlay
+    attachable: true
