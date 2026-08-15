@@ -19,6 +19,7 @@ services:
         - traefik.http.routers.financial.entrypoints=http,https
   db:
     image: mariadb:lts
+    user: "999:999"
     hostname: db
     container_name: firefly_iii_db
     restart: always
