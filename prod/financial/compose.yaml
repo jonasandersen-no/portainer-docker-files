@@ -1,0 +1,55 @@
+services:
+  app:
+    image: fireflyiii/core:latest
+    hostname: app
+    container_name: firefly_iii_core
+    restart: always
+    volumes:
+      - /mnt/nas/prod/firefly/core:/var/www/html/storage/upload
+    env_file: .env
+    networks:
+      - firefly_iii
+      - proxy
+    depends_on:
+      - db
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.financial.rule=Host(`money.jonasandersen.dev`)
+        - traefik.http.services.financial.loadbalancer.server.port=8080
+        - traefik.http.routers.financial.entrypoints=http,https
+  db:
+    image: mariadb:lts
+    hostname: db
+    container_name: firefly_iii_db
+    restart: always
+    env_file: .db.env
+    networks:
+      - firefly_iii
+    volumes:
+      - /mnt/nas/prod/firefly/db:/var/lib/mysql
+  cron:
+    #
+    # To make this work, set STATIC_CRON_TOKEN in your .env file or as an environment variable
+    # The STATIC_CRON_TOKEN must be *exactly* 32 characters long
+    # Use this URL for inspiration: https://www.random.org/strings/?num=1&len=32&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new
+    #
+    image: alpine
+    restart: always
+    container_name: firefly_iii_cron
+    env_file: .env
+    command: ["sh", "-c", "apk add tzdata && \
+      (ln -s /usr/share/zoneinfo/$$TZ /etc/localtime || true) && \
+      echo \"0 3 * * * wget -qO- http://app:8080/api/v1/cron/$$STATIC_CRON_TOKEN;echo\" \
+      | crontab - && \
+      crond -f -L /dev/stdout"]
+    networks:
+      - firefly_iii
+    depends_on:
+      - app
+
+networks:
+  proxy:
+    external: true
+  firefly_iii:
+    driver: bridge
