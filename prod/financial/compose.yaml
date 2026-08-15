@@ -49,4 +49,4 @@ networks:
   proxy:
     external: true
   firefly_iii:
-    driver: bridge
+    driver: overlay 
