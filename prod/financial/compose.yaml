@@ -12,34 +12,31 @@ services:
     depends_on:
       - db
     environment:
-      APP_ENV: production
-      APP_DEBUG: false
+      APP_ENV: "production"
+      APP_DEBUG: "false"
       SITE_OWNER: ${SITE_OWNER}
       APP_KEY: ${APP_KEY}
-      DEFAULT_LANGUAGE: en_US
-      DEFAULT_LOCALE: equal
-      TZ: Europe/Oslo
+      DEFAULT_LANGUAGE: "en_US"
+      DEFAULT_LOCALE: "equal"
+      TZ: "Europe/Oslo"
       TRUSTED_PROXIES: "**"
-      LOG_CHANNEL: stack
-      APP_LOG_LEVEL: notice
-      AUDIT_LOG_LEVEL: emergency
-      AUDIT_LOG_CHANNEL: 
-      PAPERTRAIL_HOST: 
-      PAPERTRAIL_PORT: 
-      DB_CONNECTION: mysql
-      DB_HOST: db
+      LOG_CHANNEL: "stack"
+      APP_LOG_LEVEL: "notice"
+      AUDIT_LOG_LEVEL: "emergency"
+      DB_CONNECTION: "mysql"
+      DB_HOST: "db"
       DB_PORT: 3306
-      DB_DATABASE: firefly
-      DB_USERNAME: firefly
+      DB_DATABASE: "firefly"
+      DB_USERNAME: "firefly"
       DB_PASSWORD: ${DB_PASSWORD}
       MYSQL_USE_SSL: false
       MYSQL_SSL_VERIFY_SERVER_CERT: true
       MYSQL_SSL_CAPATH: "/etc/ssl/certs/"
       PGSQL_SSL_MODE: prefer
-      PGSQL_SSL_ROOT_CERT: null
-      PGSQL_SSL_CERT: null
-      PGSQL_SSL_KEY: null
-      PGSQL_SSL_CRL_FILE: null
+      PGSQL_SSL_ROOT_CERT: "null"
+      PGSQL_SSL_CERT: "null"
+      PGSQL_SSL_KEY: "null"
+      PGSQL_SSL_CRL_FILE: "null"
       PGSQL_SCHEMA: public
       CACHE_DRIVER: file
       SESSION_DRIVER: file
@@ -52,13 +49,12 @@ services:
       COOKIE_SECURE: false
       COOKIE_SAMESITE: lax
       MAIL_MAILER: log
-      MAIL_HOST: null
+      MAIL_HOST: "null"
       MAIL_PORT: 2525
       MAIL_FROM: "changeme@example.com"
-      MAIL_USERNAME: null
-      MAIL_PASSWORD: null
-      MAIL_ENCRYPTION: null
-      MAIL_SENDMAIL_COMMAND: 
+      MAIL_USERNAME: "null"
+      MAIL_PASSWORD: "null"
+      MAIL_ENCRYPTION: "null"
       MAIL_ALLOW_SELF_SIGNED: false
       MAIL_VERIFY_PEER: true
       MAIL_VERIFY_PEER_NAME: true
