@@ -11,7 +11,99 @@ services:
       - proxy
     depends_on:
       - db
-    env_file: stack.env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      SITE_OWNER: ${SITE_OWNER}
+      APP_KEY: ${APP_KEY}
+      DEFAULT_LANGUAGE: en_US
+      DEFAULT_LOCALE: equal
+      TZ: Europe/Oslo
+      TRUSTED_PROXIES: "**"
+      LOG_CHANNEL: stack
+      APP_LOG_LEVEL: notice
+      AUDIT_LOG_LEVEL: emergency
+      AUDIT_LOG_CHANNEL: 
+      PAPERTRAIL_HOST: 
+      PAPERTRAIL_PORT: 
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: firefly
+      DB_USERNAME: firefly
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_SOCKET: 
+      MYSQL_USE_SSL: false
+      MYSQL_SSL_VERIFY_SERVER_CERT: true
+      MYSQL_SSL_CAPATH: "/etc/ssl/certs/"
+      MYSQL_SSL_CA: 
+      MYSQL_SSL_CERT: 
+      MYSQL_SSL_KEY: 
+      MYSQL_SSL_CIPHER: 
+      PGSQL_SSL_MODE: prefer
+      PGSQL_SSL_ROOT_CERT: null
+      PGSQL_SSL_CERT: null
+      PGSQL_SSL_KEY: null
+      PGSQL_SSL_CRL_FILE: null
+      PGSQL_SCHEMA: public
+      CACHE_DRIVER: file
+      SESSION_DRIVER: file
+      REDIS_SCHEME: tcp
+      REDIS_PATH: 
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+      REDIS_USERNAME: 
+      REDIS_PASSWORD: 
+      REDIS_DB: "0"
+      REDIS_CACHE_DB: "1"
+      COOKIE_PATH: "/"
+      COOKIE_DOMAIN: 
+      COOKIE_SECURE: false
+      COOKIE_SAMESITE: lax
+      MAIL_MAILER: log
+      MAIL_HOST: null
+      MAIL_PORT: 2525
+      MAIL_FROM: "changeme@example.com"
+      MAIL_USERNAME: null
+      MAIL_PASSWORD: null
+      MAIL_ENCRYPTION: null
+      MAIL_SENDMAIL_COMMAND: 
+      MAIL_ALLOW_SELF_SIGNED: false
+      MAIL_VERIFY_PEER: true
+      MAIL_VERIFY_PEER_NAME: true
+      MAILGUN_DOMAIN: 
+      MAILGUN_SECRET: 
+      MAILGUN_ENDPOINT: api.mailgun.net
+      MANDRILL_SECRET: 
+      SPARKPOST_SECRET: 
+      MAILERSEND_API_KEY: 
+      SEND_ERROR_MESSAGE: true
+      MAP_DEFAULT_LAT: 51.983333
+      MAP_DEFAULT_LONG: 5.916667
+      MAP_DEFAULT_ZOOM: 6
+      AUTHENTICATION_GUARD: web
+      AUTHENTICATION_GUARD_HEADER: REMOTE_USER
+      AUTHENTICATION_GUARD_EMAIL: 
+      PASSPORT_PRIVATE_KEY: 
+      PASSPORT_PUBLIC_KEY: 
+      CUSTOM_LOGOUT_URL: 
+      DISABLE_FRAME_HEADER: false
+      DISABLE_CSP_HEADER: false
+      TRACKER_SITE_ID: 
+      TRACKER_URL: 
+      DKR_CHECK_SQLITE: true
+      APP_NAME: FireflyIII
+      BROADCAST_DRIVER: log
+      QUEUE_DRIVER: sync
+      CACHE_PREFIX: firefly
+      PUSHER_KEY: 
+      IPINFO_TOKEN: 
+      PUSHER_SECRET: 
+      PUSHER_ID: 
+      DEMO_USERNAME: 
+      DEMO_PASSWORD: 
+      FIREFLY_III_LAYOUT: v1
+      APP_URL: ${APP_URL}
     deploy:
       labels:
         - traefik.enable=true
@@ -29,6 +121,11 @@ services:
       - firefly_iii
     volumes:
       - /mnt/nas/prod/firefly/db:/var/lib/mysql
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+      MYSQL_USER: firefly
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: firefly
   cron:
     #
     # To make this work, set STATIC_CRON_TOKEN in your .env file or as an environment variable
@@ -38,7 +135,8 @@ services:
     image: alpine
     restart: always
     container_name: firefly_iii_cron
-    env_file: stack.env
+    environment:
+      STATIC_CRON_TOKEN: ${STATIC_CRON_TOKEN}
     command: ["sh", "-c", "apk add tzdata && \
       (ln -s /usr/share/zoneinfo/$$TZ /etc/localtime || true) && \
       echo \"0 3 * * * wget -qO- http://app:8080/api/v1/cron/$$STATIC_CRON_TOKEN;echo\" \
