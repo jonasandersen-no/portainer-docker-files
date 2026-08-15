@@ -1,7 +1,7 @@
 services:
   tunnel:
     restart: unless-stopped
-    image: cloudflare/cloudflared:2026.7.3
+    image: cloudflare/cloudflared:2026.8.2
     command: tunnel --loglevel debug --config /etc/cloudflared/config/config.yaml run
     volumes:
       - /mnt/nas/prod/cloudflared-credentials/public:/etc/cloudflared/config
