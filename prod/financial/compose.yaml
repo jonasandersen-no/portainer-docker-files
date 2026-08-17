@@ -74,6 +74,7 @@ services:
       CACHE_PREFIX: firefly
       FIREFLY_III_LAYOUT: v1
       APP_URL: ${APP_URL}
+      STATIC_CRON_TOKEN: ${STATIC_CRON_TOKEN}
     deploy:
       labels:
         - traefik.enable=true
