@@ -1,0 +1,88 @@
+name: Deploy Docker Swarm Stacks
+
+on:
+#  push:
+#    branches:
+#      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-swarm-stacks
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy stacks to Docker Swarm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Copy repository to Swarm manager
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SWARM_MANAGER_HOST }}
+          username: ${{ secrets.SWARM_MANAGER_USER }}
+          key: ${{ secrets.SWARM_MANAGER_SSH_KEY }}
+          source: "."
+          target: "${{ secrets.SWARM_DEPLOY_PATH }}"
+          rm: true
+          strip_components: 0
+
+      - name: Deploy Docker Swarm stacks
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SWARM_MANAGER_HOST }}
+          username: ${{ secrets.SWARM_MANAGER_USER }}
+          key: ${{ secrets.SWARM_MANAGER_SSH_KEY }}
+          script: |
+            set -eu
+
+            cd "${{ secrets.SWARM_DEPLOY_PATH }}"
+
+            echo "Deploying Docker Swarm stacks from: $(pwd)"
+            echo
+
+            find prod shared \
+              \( -name "compose.yaml" -o -name "compose.yml" -o -name "docker-compose.yaml" -o -name "docker-compose.yml" \) \
+              -type f \
+              | sort \
+              | while read -r compose_file; do
+                  stack_dir="$(dirname "$compose_file")"
+
+                  stack_name="$(echo "$stack_dir" \
+                    | tr '/[:upper:]' '_[:lower:]' \
+                    | sed 's/[^a-z0-9_]/_/g' \
+                    | sed 's/_*$//')"
+
+                  echo "----------------------------------------"
+                  echo "Deploying stack: $stack_name"
+                  echo "Compose file: $compose_file"
+
+                  cd "$stack_dir"
+
+                  if [ -f ".env" ]; then
+                    echo "Loading .env for $stack_name"
+                    set -a
+                    . ./.env
+                    set +a
+                  fi
+
+                  docker stack deploy \
+                    --compose-file "$(basename "$compose_file")" \
+                    --detach=true \
+                    --prune \
+                    "$stack_name"
+
+                  cd - > /dev/null
+                done
+
+            echo
+            echo "Deployment complete."
+            docker stack ls
