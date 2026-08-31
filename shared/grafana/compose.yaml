@@ -14,8 +14,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.http.routers.grafana.rule=(Host(`grafana.jonasandersen.no`) ||
-          Host(`grafana.jonasandersen.dev`))
+        - traefik.http.routers.grafana.rule=Host(`grafana.jonasandersen.no`)
         - traefik.http.services.grafana.loadbalancer.server.port=3000
         - traefik.http.routers.grafana.entrypoints=http,https,http-external
   prometheus:
