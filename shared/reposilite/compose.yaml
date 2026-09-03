@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   reposilite:
-    image: dzikoysk/reposilite:3.6.2
+    image: dzikoysk/reposilite:3.6.3
     ports:
       - ${PORT}:${PORT}
     environment:
