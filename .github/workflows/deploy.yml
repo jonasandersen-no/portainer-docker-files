@@ -36,7 +36,7 @@ jobs:
           strip_components: 0
 
       - name: Deploy Docker Swarm stacks
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.SWARM_MANAGER_HOST }}
           username: ${{ secrets.SWARM_MANAGER_USER }}
